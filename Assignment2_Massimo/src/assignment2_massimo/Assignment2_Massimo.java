@@ -51,7 +51,7 @@ public class Assignment2_Massimo extends Application {
         Parent fxmlRoot = FXMLLoader.load(getClass().getResource("FXML.fxml"));
         Scene fxmlScene = new Scene(fxmlRoot);
 
-        //Scene 2 Slideshow Scene
+        //SCENE2 Slideshow Scene
         BorderPane slideshowPane = new BorderPane();
         Label lblImage = new Label();
         lblImage.setAlignment(Pos.CENTER);
@@ -68,11 +68,11 @@ public class Assignment2_Massimo extends Application {
 
         //Display names of runners
         String[] names = {
-            "Runner 1",
-            "Runner 2",
-            "Runner 3",
-            "Runner 4",
-            "Runner 5"
+            "Bolt #1",
+            "Kipchoge #2",
+            "Matadi #3",
+            "Lyles #4",
+            "Asemoto #5"
         };
 
         //Setting image views 
@@ -87,10 +87,14 @@ public class Assignment2_Massimo extends Application {
         nameLabel.setStyle("-fx-font-weight: bold;");
         nameLabel.setTextFill(Color.WHITE);
 
+        Button skipButton = new Button("Skip");
+        skipButton.setFont(new Font(22));
+        
         //Runner image display Vbox
         VBox centerBox = new VBox(20, lblImage, nameLabel);
         centerBox.setAlignment(Pos.CENTER);
         slideshowPane.setCenter(centerBox);
+        slideshowPane.setBottom(skipButton);
         Scene slideshowScene = new Scene(slideshowPane, 800, 600);
 
         // Timeline runs once, then switches scenes
@@ -107,7 +111,7 @@ public class Assignment2_Massimo extends Application {
             stage.setScene(fxmlScene);
         });
 
-        // Start screen scene layout
+        // START screen scene layout
         Pane startPane = new Pane();
         startPane.setPrefSize(800, 600);
         Label startLabel = new Label("Marathon Simulator");
@@ -142,11 +146,17 @@ public class Assignment2_Massimo extends Application {
         startPane.setBackground(new Background(backgroundImage));
         slideshowPane.setBackground(new Background(backgroundImage));
 
-        // Start button action
+        // START button action
         startButton1.setOnAction(e -> {
             stage.setScene(slideshowScene);// go to Scene 2
             backgroundSong.play();          // play the background song 
             timeline.play();                // begin slideshow
+        });
+
+        //SKIP button action
+        skipButton.setOnAction(e -> {
+            timeline.stop();
+            stage.setScene(fxmlScene);
         });
 
         startPane.getChildren().addAll(startLabel, startButton1);

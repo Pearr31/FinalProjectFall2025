@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package assignment2_massimo;
 
 import java.net.URL;
@@ -89,6 +85,13 @@ public class FXMLController implements Initializable {
         // Reset for new race when start is pressed
         raceFinished = false;
         marathonStatusLabel.setText("The Race Has Begun");
+        String[] names = {
+            "Bolt #1",
+            "Kipchoge #2",
+            "Matadi #3",
+            "Lyles #4",
+            "Asemoto #5"
+        };
 
         for (int i = 0; i < 5; i++) {
             final int runnerNumber = i + 1;
@@ -101,16 +104,17 @@ public class FXMLController implements Initializable {
             runner.setOnFinish(r -> {
                 if (!raceFinished) {
                     raceFinished = true;
-                    marathonStatusLabel.setText("The Race Has Ended");
                     // Creating a pop out screne to display the winner
                     Alert alert = new Alert(AlertType.INFORMATION);
                     alert.setHeaderText("Race Winner");
-                    javafx.scene.control.Label winnerLabel = new javafx.scene.control.Label(
-                            "Runner " + runner.getNumber() + " is the winner!");
+                    javafx.scene.control.Label winnerLabel = new javafx.scene.control.Label( names[runner.getNumber()-1] +
+                    " is the winner!");
                     winnerLabel.setStyle("-fx-font-size: 24px; -fx-text-fill: green; -fx-font-weight: bold;");
                     alert.setGraphic(winnerLabel);
                     alert.setTitle("! Marathon Winner !");
+                    marathonStatusLabel.setText("Runner " + runner.getNumber() + " is the winner! And the race is over!");
                     alert.show();
+                    raceEnd();
                 }
             });
 
@@ -150,5 +154,10 @@ public class FXMLController implements Initializable {
 
         // Close the application
         Platform.exit();
+    }
+    private void raceEnd() {
+    for (Runner runner : runners) {
+                      runner.stop();
+                  }
     }
 }
