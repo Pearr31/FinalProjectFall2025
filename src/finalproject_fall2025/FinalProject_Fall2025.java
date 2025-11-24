@@ -7,7 +7,7 @@ import javafx.stage.Stage;
  *
  * @author massi
  */
-public class FinalProject_Fall2025 extends Application{
+public class FinalProject_Fall2025 extends Application {
 
     /**
      * @param args the command line arguments
@@ -18,7 +18,11 @@ public class FinalProject_Fall2025 extends Application{
 
     @Override
     public void start(Stage stage) throws Exception {
-        
+        Parent fxmlRoot = FXMLLoader.load(getClass().getResource("FXML.fxml"));
+        Scene fxmlScene = new Scene(fxmlRoot);
+
+        stage.setScene(fxmlScene);
+        stage.show();
     }
-    
+
 }
