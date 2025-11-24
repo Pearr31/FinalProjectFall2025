@@ -20,13 +20,13 @@
                   <Insets right="100.0" />
                </BorderPane.margin>
                <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="235.0" layoutX="513.0" layoutY="230.0" stroke="BLACK" strokeType="INSIDE" width="137.0" />
-                  <TextArea fx:id="editHeightTextArea" layoutX="532.0" layoutY="404.0" prefHeight="47.0" prefWidth="99.0" promptText="Add height" wrapText="true">
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="235.0" layoutX="508.0" layoutY="228.0" stroke="BLACK" strokeType="INSIDE" width="137.0" />
+                  <TextArea fx:id="editHeightTextArea" layoutX="527.0" layoutY="392.0" prefHeight="47.0" prefWidth="99.0" promptText="Add height" wrapText="true">
                      <font>
                         <Font size="15.0" />
                      </font>
                   </TextArea>
-                  <TextArea fx:id="editInitialSpeed" layoutX="136.0" layoutY="6.0" prefHeight="38.0" prefWidth="169.0" promptText="Add initial speed" wrapText="true">
+                  <TextArea fx:id="editInitialSpeed" layoutX="91.0" layoutY="6.0" prefHeight="48.0" prefWidth="135.0" promptText="Add initial speed" wrapText="true">
                      <font>
                         <Font size="15.0" />
                      </font>
