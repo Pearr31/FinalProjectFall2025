@@ -14,7 +14,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finalproject_fall2025.FXMLController">
    <children>
       <BorderPane fx:id="borderPane" prefHeight="700.0" prefWidth="900.0">
          <center>
@@ -24,17 +24,17 @@
                </BorderPane.margin>
                <children>
                   <Rectangle arcHeight="5.0" arcWidth="5.0" blendMode="MULTIPLY" fill="#ff681f" height="235.0" layoutX="508.0" layoutY="228.0" stroke="BLACK" strokeType="INSIDE" width="137.0" />
-                  <TextArea fx:id="editHeightTextArea" layoutX="527.0" layoutY="392.0" prefHeight="47.0" prefWidth="99.0" promptText="Add height" wrapText="true">
+                  <TextArea fx:id="editHeightTextArea" layoutX="527.0" layoutY="392.0" prefHeight="48.0" prefWidth="110.0" promptText="Add height" wrapText="true">
                      <font>
                         <Font size="15.0" />
                      </font>
                   </TextArea>
-                  <TextArea fx:id="editInitialSpeed" layoutX="91.0" layoutY="6.0" prefHeight="48.0" prefWidth="135.0" promptText="Add initial speed" wrapText="true">
+                  <TextArea fx:id="editInitialSpeed" layoutX="91.0" layoutY="6.0" prefHeight="48.0" prefWidth="168.0" promptText="Add initial speed" wrapText="true">
                      <font>
                         <Font size="15.0" />
                      </font>
                   </TextArea>
-                  <Slider fx:id="angleSlider" layoutX="591.0" layoutY="77.0" majorTickUnit="30.0" max="90.0" orientation="VERTICAL" prefHeight="100.0" showTickLabels="true" showTickMarks="true" />
+                  <Slider fx:id="angleSlider" layoutX="602.0" layoutY="6.0" majorTickUnit="30.0" max="90.0" orientation="VERTICAL" prefHeight="176.0" prefWidth="43.0" showTickLabels="true" showTickMarks="true" />
                   <ImageView fitHeight="83.0" fitWidth="62.0" layoutX="515.0" layoutY="144.0" pickOnBounds="true" preserveRatio="true" smooth="false">
                      <image>
                         <Image url="@images/wojak.jpg" />
@@ -49,7 +49,7 @@
                   <Insets bottom="5.0" left="700.0" right="5.0" top="5.0" />
                </BorderPane.margin>
                <children>
-                  <Label fx:id="flightTimeLabel" prefHeight="37.0" prefWidth="139.0" text="Flight Time:">
+                  <Label fx:id="flightTimeLabel" prefHeight="37.0" prefWidth="200.0" text="Flight Time:">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -57,7 +57,7 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </padding>
                   </Label>
-                  <Label fx:id="finalVelocityLabel" prefHeight="37.0" prefWidth="152.0" text="Final Velocity:">
+                  <Label fx:id="finalVelocityLabel" prefHeight="37.0" prefWidth="195.0" text="Final Velocity:">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -71,7 +71,7 @@
          <left>
             <VBox prefHeight="200.0" prefWidth="150.0" BorderPane.alignment="CENTER">
                <children>
-                  <Label fx:id="maxHeightLabel" prefHeight="27.0" prefWidth="124.0" text="Max Height:">
+                  <Label fx:id="maxHeightLabel" prefHeight="27.0" prefWidth="156.0" text="Max Height:">
                      <VBox.margin>
                         <Insets left="10.0" top="200.0" />
                      </VBox.margin>
@@ -90,7 +90,7 @@
                         <Font size="36.0" />
                      </font>
                   </Button>
-                  <Label fx:id="rangeLabel" layoutX="378.0" layoutY="49.0" prefHeight="27.0" prefWidth="77.0" text="Range:">
+                  <Label fx:id="rangeLabel" layoutX="378.0" layoutY="49.0" prefHeight="27.0" prefWidth="135.0" text="Range:">
                      <font>
                         <Font size="18.0" />
                      </font>
