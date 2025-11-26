@@ -6,8 +6,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-
-
 /**
  *
  * @author massi
@@ -25,7 +23,6 @@ public class FinalProject_Fall2025 extends Application {
     public void start(Stage stage) throws Exception {
         Parent fxmlRoot = FXMLLoader.load(getClass().getResource("FXML.fxml"));
         Scene fxmlScene = new Scene(fxmlRoot);
-
         stage.setScene(fxmlScene);
         stage.show();
     }
