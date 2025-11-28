@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package finalproject_fall2025;
 
 import java.net.URL;
@@ -18,6 +14,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
+import javafx.scene.shape.Rectangle;
 
 /**
  * FXML Controller class
@@ -50,6 +47,9 @@ public class FXMLController implements Initializable {
     private Slider angleSlider;
     @FXML
     private Label titleLabel;
+
+    @FXML
+    private Rectangle ProjectileStartPlatform;
 
     /**
      * Initializes the controller class.
@@ -86,59 +86,64 @@ public class FXMLController implements Initializable {
 
         }
     }
-    
-
-    
 
     private void drawTrajectoryArc(Projectile projectile) {
-        simulationPane.getChildren().removeIf(node -> node instanceof Arc);
+        // Remove old curves
+        simulationPane.getChildren().removeIf(node -> node instanceof javafx.scene.shape.Polyline);
 
-        double paneWidth = simulationPane.getPrefWidth();
-        double paneHeight = simulationPane.getPrefHeight();
+        double paneWidth = simulationPane.getWidth();
+        double paneHeight = simulationPane.getHeight();
+        double margin = 40;
 
-        // Margin so arc isn't glued to the border
-        double margin = 40.0;
-        double usableWidth = paneWidth - 2 * margin;
-        double usableHeight = paneHeight - 2 * margin;
-
-        // Scale physics values to fit the pane
         double range = projectile.getRange();
-        double heightDiff = projectile.getMaxHeight() - projectile.getInitialHeight();
-        if (range <= 0 || heightDiff <= 0) {
-            return; // nothing reasonable to draw
-        }
+        double maxHeight = projectile.getMaxHeight();
+        double initialHeight = projectile.getInitialHeight();
+        double flightTime = projectile.getFlightTime();
 
-        double scaleX = usableWidth / range;
-        double scaleY = usableHeight / heightDiff;
+        // Compute scale so the entire trajectory fits in pane
+        double scaleX = (paneWidth - 2 * margin) / range;
+        double scaleY = (paneHeight - 2 * margin) / maxHeight;
         double scale = Math.min(scaleX, scaleY);
 
-        // Arc radii based on range & height
-        double radiusX = (range * scale) / 2.0;
-        double radiusY = heightDiff * scale;
+        // Ground Y-level
+        double groundY = paneHeight - margin;
 
-        // Position the ground a bit above the bottom of the pane
-        double groundY = paneHeight - margin - projectile.getInitialHeight() * scale;
+        double platformWidth = ProjectileStartPlatform.getWidth(); // preserve width
+        double platformHeight = initialHeight * scale;             // scaled height
 
-        // Center of the arc horizontally is in the middle of the range
-        double centerX = margin + radiusX;
-        double centerY = groundY;
+        double platformX = paneWidth - margin - platformWidth;     // snap to bottom-right
+        double platformY = groundY - platformHeight;               // top rises, bottom fixed
 
-        Arc trajectoryArc = new Arc();
-        trajectoryArc.setCenterX(centerX);
-        trajectoryArc.setCenterY(centerY);
-        trajectoryArc.setRadiusX(radiusX);
-        trajectoryArc.setRadiusY(radiusY);
+        ProjectileStartPlatform.setWidth(platformWidth);
+        ProjectileStartPlatform.setHeight(platformHeight);
+        ProjectileStartPlatform.setLayoutX(platformX);
+        ProjectileStartPlatform.setLayoutY(platformY);
 
-        // Make a "∩" shape from left ground to right ground
-        trajectoryArc.setStartAngle(180);   // left side
-        trajectoryArc.setLength(-180);      // sweep to right side
-        trajectoryArc.setType(ArcType.OPEN); // *** this is the arc type you want ***
+        // Projectile should fire from the TOP of the platform
+        double startX = platformX + platformWidth / 2;  // center of platform
+        double startY = platformY;                      // top of platform
 
-        trajectoryArc.setStroke(Color.BLUE);
-        trajectoryArc.setStrokeWidth(2);
-        trajectoryArc.setFill(Color.TRANSPARENT);
+        javafx.scene.shape.Polyline curve = new javafx.scene.shape.Polyline();
+        curve.setStroke(Color.RED);
+        curve.setStrokeWidth(2);
 
-        simulationPane.getChildren().add(trajectoryArc);
+        int steps = 200;
+        for (int i = 0; i <= steps; i++) {
+            double t = flightTime * i / steps;
+
+            // Physics model
+            double x = projectile.getInitialVelocity() * Math.cos(projectile.getLaunchAngle()) * t;
+            double y = initialHeight
+                    + projectile.getInitialVelocity() * Math.sin(projectile.getLaunchAngle()) * t
+                    - 0.5 * 9.81 * t * t;
+
+            // Convert physics position -> pane coordinates
+            double sx = startX - x * scale;       // moves LEFT as x increases
+            double sy = groundY - y * scale;      // moves UP as y increases
+
+            curve.getPoints().addAll(sx, sy);
+        }
+
+        simulationPane.getChildren().add(curve);
     }
-
 }

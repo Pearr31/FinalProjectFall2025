@@ -23,7 +23,7 @@
                   <Insets right="100.0" />
                </BorderPane.margin>
                <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" blendMode="MULTIPLY" fill="#ff681f" height="235.0" layoutX="508.0" layoutY="228.0" stroke="BLACK" strokeType="INSIDE" width="137.0" />
+                  <Rectangle fx:id="ProjectileStartPlatform" arcHeight="5.0" arcWidth="5.0" blendMode="MULTIPLY" fill="#ff681f" height="235.0" layoutX="508.0" layoutY="228.0" stroke="BLACK" strokeType="INSIDE" width="137.0" />
                   <TextArea fx:id="editHeightTextArea" layoutX="527.0" layoutY="392.0" prefHeight="48.0" prefWidth="110.0" promptText="Add height" wrapText="true">
                      <font>
                         <Font size="15.0" />
