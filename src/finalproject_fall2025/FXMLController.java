@@ -25,6 +25,12 @@ import javafx.scene.paint.Color;
 public class FXMLController implements Initializable {
 
     @FXML
+    private Label angleValueLabel;
+
+    private AnimationTimer currentTimer;
+    @FXML
+    private javafx.scene.shape.Rectangle heightRectangle;
+    @FXML
     private BorderPane borderPane;
     @FXML
     private Label finalVelocityLabel;
@@ -60,8 +66,14 @@ public class FXMLController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         simulationStartButton.setOnAction(e -> handleSimulationStart());
-        simulationResetButton.setOnAction(e->handleSimulationReset());
+        simulationResetButton.setOnAction(e -> handleSimulationReset());
         simulationResetButton.setDisable(true);
+
+        angleValueLabel.setText("Angle: " + (int) angleSlider.getValue() + "°");
+
+        angleSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            angleValueLabel.setText("Angle: " + newVal.intValue() + "°");
+        });
     }
 
     @FXML
@@ -93,6 +105,10 @@ public class FXMLController implements Initializable {
 
     @FXML
     private void handleSimulationReset() {
+        if (currentTimer != null) {
+            currentTimer.stop();
+            currentTimer = null;
+        }
         editInitialSpeed.clear();
         editHeightTextArea.clear();
 
@@ -103,10 +119,12 @@ public class FXMLController implements Initializable {
 
         var gc = simulationCanvas.getGraphicsContext2D();
         gc.clearRect(0, 0, simulationCanvas.getWidth(), simulationCanvas.getHeight());
-        
+
         simulationStartButton.setDisable(false);
         simulationResetButton.setDisable(true);
-        
+        heightRectangle.setHeight(20);
+        heightRectangle.setLayoutY(simulationCanvas.getHeight() - 20);
+
     }
 
     private void showInvalidInputAlert() {
@@ -143,14 +161,15 @@ public class FXMLController implements Initializable {
 
         double xScale = canvasWidth / range;
         double yScale = canvasHeight / (maxHeight + initialHeight + 1);
+        updatePlatformHeight(projectile.getInitialHeight(), yScale);
         double flightTime = projectile.getFlightTime();
 
         // Animation state
         final long[] startTime = {0};
         final double[] prevX = {canvasWidth}; // Start at right edge
-        final double[] prevY = {canvasHeight - initialHeight * yScale};
+        final double[] prevY = {heightRectangle.getLayoutY()};
 
-        AnimationTimer timer = new AnimationTimer() {
+        currentTimer = new AnimationTimer() {
 
             @Override
             public void start() {
@@ -186,6 +205,26 @@ public class FXMLController implements Initializable {
             }
         };
 
-        timer.start();
+        currentTimer.start();
+
+    }
+
+    private void updatePlatformHeight(double heightMeters, double yScale) {
+        double canvasHeight = simulationCanvas.getHeight();
+
+        // Convert meters -> pixels using the SAME yScale as the arc
+        double pixelHeight = heightMeters * yScale;
+
+        // Safety: never invisible
+        double minHeight = 5;
+        if (pixelHeight < minHeight) {
+            pixelHeight = minHeight;
+        }
+
+        // Apply size
+        heightRectangle.setHeight(pixelHeight);
+
+        // Anchor to ground
+        heightRectangle.setLayoutY(canvasHeight - pixelHeight);
     }
 }
