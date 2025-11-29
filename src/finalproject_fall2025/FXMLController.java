@@ -144,7 +144,7 @@ public class FXMLController implements Initializable {
 
         // Animation state
         final long[] startTime = {0};
-        final double[] prevX = {canvasWidth}; // ✔️ Start at right edge
+        final double[] prevX = {canvasWidth}; // Start at right edge
         final double[] prevY = {canvasHeight - initialHeight * yScale};
 
         AnimationTimer timer = new AnimationTimer() {
@@ -168,7 +168,7 @@ public class FXMLController implements Initializable {
                 double x = projectile.getX(elapsedSeconds);
                 double y = projectile.getY(elapsedSeconds);
 
-                // ✔️ MIRROR X so it draws from right to left
+                //️ MIRROR X so it draws from right to left
                 double canvasX = canvasWidth - (x * xScale);
                 double canvasY = canvasHeight - (y * yScale);
 
