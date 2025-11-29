@@ -18,7 +18,7 @@
          <bottom>
             <Pane fx:id="bottomPane" prefHeight="125.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button fx:id="simulationStartButton" layoutX="736.0" layoutY="24.0" mnemonicParsing="false" onAction="#handleSimulationStartRestart" prefWidth="150.0" style="-fx-background-color: lime;" text="Start" textFill="WHITE">
+                  <Button fx:id="simulationStartButton" layoutX="677.0" layoutY="24.0" mnemonicParsing="false" onAction="#handleSimulationStartRestart" prefWidth="200.0" style="-fx-background-color: lime;" text="Start" textFill="WHITE">
                      <font>
                         <Font size="36.0" />
                      </font>

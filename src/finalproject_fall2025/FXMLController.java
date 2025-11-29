@@ -7,12 +7,15 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 
 /**
  * FXML Controller class
@@ -58,6 +61,25 @@ public class FXMLController implements Initializable {
 
     @FXML
     private void handleSimulationStartRestart() {
+        if (simulationStartButton.getText().equals("Restart")) {
+            // Clear text fields
+            editInitialSpeed.clear();
+            editHeightTextArea.clear();
+
+            // Reset labels
+            flightTimeLabel.setText("Flight Time:");
+            maxHeightLabel.setText("Max Height:");
+            rangeLabel.setText("Range:");
+            finalVelocityLabel.setText("Final Velocity:");
+
+            // Clear canvas
+            var gc = simulationCanvas.getGraphicsContext2D();
+            gc.clearRect(0, 0, simulationCanvas.getWidth(), simulationCanvas.getHeight());
+
+            // Switch back to START mode and exit
+            simulationStartButton.setText("Start");
+            return;
+        }
         try {
             double inputVelocity = Double.parseDouble(editInitialSpeed.getText());
             double inputLaunchAngle = angleSlider.getValue();
@@ -79,8 +101,25 @@ public class FXMLController implements Initializable {
             flightTimeLabel.setText("Flight Time: invalid input");
             maxHeightLabel.setText("Max Height: invalid input");
             rangeLabel.setText("Range: invalid input");
-            finalVelocityLabel.setText("Final Velocity: invalid inpu");
+            finalVelocityLabel.setText("Final Velocity: invalid input");
 
+            Alert invalidInputAlert = new Alert(Alert.AlertType.INFORMATION);
+            invalidInputAlert.setHeaderText("ERROR");
+
+            //Alerting the user that there are invalid inputs
+            Label alertLabel = new Label("One or more INVALID inputs");
+            alertLabel.setStyle("-fx-font-size: 24px; -fx-text-fill: red; -fx-font-weight: bold;");
+            invalidInputAlert.setGraphic(alertLabel);
+            invalidInputAlert.setTitle("Invalid input(s)");
+            invalidInputAlert.show();
+        }
+        if (flightTimeLabel.getText().equals("Flight Time: invalid input")
+                || maxHeightLabel.getText().equals("Max Height: invalid input")
+                || rangeLabel.getText().equals("Range: invalid input")
+                || finalVelocityLabel.getText().equals("Final Velocity: invalid input")) {
+            return;
+        } else {
+            simulationStartButton.setText("Restart");
         }
     }
 
