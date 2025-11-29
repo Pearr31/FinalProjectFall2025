@@ -45,7 +45,7 @@ public class FXMLController implements Initializable {
     @FXML
     private Button simulationStartButton;
     @FXML
-    private Pane simulationPane;
+    private Pane simulationPane;            //is this still needed after switching to canvas?
     @FXML
     private Canvas simulationCanvas;
     @FXML
@@ -59,6 +59,8 @@ public class FXMLController implements Initializable {
 
     @FXML
     private Button simulationResetButton;
+
+    private static final double MAXHEIGHTCANVAS = 100;      //sets top of canvas to max 100m 
 
     /**
      * Initializes the controller class.
@@ -158,10 +160,11 @@ public class FXMLController implements Initializable {
         if (range <= 0) {
             return;
         }
-
         double xScale = canvasWidth / range;
-        double yScale = canvasHeight / (maxHeight + initialHeight + 1);
-        updatePlatformHeight(projectile.getInitialHeight(), yScale);
+        double yScale = canvasHeight / MAXHEIGHTCANVAS;
+
+        updatePlatformHeight(initialHeight, yScale);
+
         double flightTime = projectile.getFlightTime();
 
         // Animation state
@@ -183,12 +186,16 @@ public class FXMLController implements Initializable {
                 double elapsedSeconds = (now - startTime[0]) / 1_000_000_000.0;
 
                 if (elapsedSeconds > flightTime) {
-                    this.stop();
+                    stop();
                     return;
                 }
 
                 double x = projectile.getX(elapsedSeconds);
                 double y = projectile.getY(elapsedSeconds);
+
+                if (y > MAXHEIGHTCANVAS) {
+                    y = MAXHEIGHTCANVAS;
+                }
 
                 //️ MIRROR X so it draws from right to left
                 double canvasX = canvasWidth - (x * xScale);
@@ -215,10 +222,9 @@ public class FXMLController implements Initializable {
         // Convert meters -> pixels using the SAME yScale as the arc
         double pixelHeight = heightMeters * yScale;
 
-        // Safety: never invisible
-        double minHeight = 5;
-        if (pixelHeight < minHeight) {
-            pixelHeight = minHeight;
+       
+        if (pixelHeight < 5) {      //if computed too small -> 5 pixels
+            pixelHeight = 5;
         }
 
         // Apply size
