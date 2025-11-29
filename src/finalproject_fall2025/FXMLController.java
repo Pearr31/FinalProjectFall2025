@@ -81,9 +81,14 @@ public class FXMLController implements Initializable {
     @FXML
     private void handleSimulationStart() {
         try {
+            
             double inputVelocity = Double.parseDouble(editInitialSpeed.getText());
             double inputLaunchAngle = angleSlider.getValue();
             double inputHeight = Double.parseDouble(editHeightTextArea.getText());
+
+            if (inputVelocity < 0) {
+                showInvalidInputAlert();
+            }
 
             Projectile projectile = new Projectile(inputVelocity, inputLaunchAngle, inputHeight);
 
@@ -222,7 +227,6 @@ public class FXMLController implements Initializable {
         // Convert meters -> pixels using the SAME yScale as the arc
         double pixelHeight = heightMeters * yScale;
 
-       
         if (pixelHeight < 5) {      //if computed too small -> 5 pixels
             pixelHeight = 5;
         }
