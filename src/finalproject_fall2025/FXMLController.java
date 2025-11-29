@@ -2,33 +2,33 @@ package finalproject_fall2025;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Arc;
-import javafx.scene.shape.ArcType;
-import javafx.scene.shape.Rectangle;
 
 /**
  * FXML Controller class
  *
- * @author PC
+ * @author massi
  */
 public class FXMLController implements Initializable {
 
     @FXML
     private BorderPane borderPane;
     @FXML
+    private Label finalVelocityLabel;
+    @FXML
     private Label flightTimeLabel;
     @FXML
-    private Label finalVelocityLabel;
+    private Label rangeLabel;
     @FXML
     private Label maxHeightLabel;
     @FXML
@@ -36,9 +36,9 @@ public class FXMLController implements Initializable {
     @FXML
     private Button simulationStartButton;
     @FXML
-    private Label rangeLabel;
-    @FXML
     private Pane simulationPane;
+    @FXML
+    private Canvas simulationCanvas;
     @FXML
     private TextArea editHeightTextArea;
     @FXML
@@ -47,9 +47,6 @@ public class FXMLController implements Initializable {
     private Slider angleSlider;
     @FXML
     private Label titleLabel;
-
-    @FXML
-    private Rectangle ProjectileStartPlatform;
 
     /**
      * Initializes the controller class.
@@ -88,62 +85,65 @@ public class FXMLController implements Initializable {
     }
 
     private void drawTrajectoryArc(Projectile projectile) {
-        // Remove old curves
-        simulationPane.getChildren().removeIf(node -> node instanceof javafx.scene.shape.Polyline);
+        var gc = simulationCanvas.getGraphicsContext2D();
+        gc.clearRect(0, 0, simulationCanvas.getWidth(), simulationCanvas.getHeight());
 
-        double paneWidth = simulationPane.getWidth();
-        double paneHeight = simulationPane.getHeight();
-        double margin = 40;
+        double canvasWidth = simulationCanvas.getWidth();
+        double canvasHeight = simulationCanvas.getHeight();
 
         double range = projectile.getRange();
         double maxHeight = projectile.getMaxHeight();
         double initialHeight = projectile.getInitialHeight();
-        double flightTime = projectile.getFlightTime();
 
-        // Compute scale so the entire trajectory fits in pane
-        double scaleX = (paneWidth - 2 * margin) / range;
-        double scaleY = (paneHeight - 2 * margin) / maxHeight;
-        double scale = Math.min(scaleX, scaleY);
-
-        // Ground Y-level
-        double groundY = paneHeight - margin;
-
-        double platformWidth = ProjectileStartPlatform.getWidth(); // preserve width
-        double platformHeight = initialHeight * scale;             // scaled height
-
-        double platformX = paneWidth - margin - platformWidth;     // snap to bottom-right
-        double platformY = groundY - platformHeight;               // top rises, bottom fixed
-
-        ProjectileStartPlatform.setWidth(platformWidth);
-        ProjectileStartPlatform.setHeight(platformHeight);
-        ProjectileStartPlatform.setLayoutX(platformX);
-        ProjectileStartPlatform.setLayoutY(platformY);
-
-        // Projectile should fire from the TOP of the platform
-        double startX = platformX + platformWidth / 2;  // center of platform
-        double startY = platformY;                      // top of platform
-
-        javafx.scene.shape.Polyline curve = new javafx.scene.shape.Polyline();
-        curve.setStroke(Color.RED);
-        curve.setStrokeWidth(2);
-
-        int steps = 200;
-        for (int i = 0; i <= steps; i++) {
-            double t = flightTime * i / steps;
-
-            // Physics model
-            double x = projectile.getInitialVelocity() * Math.cos(projectile.getLaunchAngle()) * t;
-            double y = initialHeight
-                    + projectile.getInitialVelocity() * Math.sin(projectile.getLaunchAngle()) * t
-                    - 0.5 * 9.81 * t * t;
-
-            // Convert physics position -> pane coordinates
-            double sx = startX - x * scale;       // moves LEFT as x increases
-            double sy = groundY - y * scale;      // moves UP as y increases
-
-            curve.getPoints().addAll(sx, sy);
+        if (range <= 0) {
+            return;
         }
 
-        simulationPane.getChildren().add(curve);
+        double xScale = canvasWidth / range;
+        double yScale = canvasHeight / (maxHeight + initialHeight + 1);
+        double flightTime = projectile.getFlightTime();
+
+        // Animation state
+        final long[] startTime = {0};
+        final double[] prevX = {canvasWidth}; // ✔️ Start at right edge
+        final double[] prevY = {canvasHeight - initialHeight * yScale};
+
+        AnimationTimer timer = new AnimationTimer() {
+
+            @Override
+            public void start() {
+                startTime[0] = System.nanoTime();
+                super.start();
+            }
+
+            @Override
+            public void handle(long now) {
+
+                double elapsedSeconds = (now - startTime[0]) / 1_000_000_000.0;
+
+                if (elapsedSeconds > flightTime) {
+                    this.stop();
+                    return;
+                }
+
+                double x = projectile.getX(elapsedSeconds);
+                double y = projectile.getY(elapsedSeconds);
+
+                // ✔️ MIRROR X so it draws from right to left
+                double canvasX = canvasWidth - (x * xScale);
+                double canvasY = canvasHeight - (y * yScale);
+
+                gc.strokeLine(prevX[0], prevY[0], canvasX, canvasY);
+
+                prevX[0] = canvasX;
+                prevY[0] = canvasY;
+
+                if (y < 0) {
+                    this.stop();
+                }
+            }
+        };
+
+        timer.start();
     }
 }

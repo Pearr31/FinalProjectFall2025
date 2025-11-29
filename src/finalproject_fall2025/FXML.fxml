@@ -1,87 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextArea?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane id="AnchorPane" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finalproject_fall2025.FXMLController">
    <children>
       <BorderPane fx:id="borderPane" prefHeight="700.0" prefWidth="900.0">
-         <center>
-            <Pane fx:id="simulationPane" prefHeight="400.0" prefWidth="600.0" style="-fx-border-color: black; -fx-border-width: 5;" BorderPane.alignment="CENTER">
-               <BorderPane.margin>
-                  <Insets right="100.0" />
-               </BorderPane.margin>
-               <children>
-                  <Rectangle fx:id="ProjectileStartPlatform" arcHeight="5.0" arcWidth="5.0" blendMode="MULTIPLY" fill="#ff681f" height="235.0" layoutX="508.0" layoutY="228.0" stroke="BLACK" strokeType="INSIDE" width="137.0" />
-                  <TextArea fx:id="editHeightTextArea" layoutX="527.0" layoutY="392.0" prefHeight="48.0" prefWidth="110.0" promptText="Add height" wrapText="true">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                  </TextArea>
-                  <TextArea fx:id="editInitialSpeed" layoutX="91.0" layoutY="6.0" prefHeight="48.0" prefWidth="168.0" promptText="Add initial speed" wrapText="true">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                  </TextArea>
-                  <Slider fx:id="angleSlider" layoutX="602.0" layoutY="6.0" majorTickUnit="30.0" max="90.0" orientation="VERTICAL" prefHeight="176.0" prefWidth="43.0" showTickLabels="true" showTickMarks="true" />
-                  <ImageView fitHeight="83.0" fitWidth="62.0" layoutX="515.0" layoutY="144.0" pickOnBounds="true" preserveRatio="true" smooth="false">
-                     <image>
-                        <Image url="@images/wojak.jpg" />
-                     </image>
-                  </ImageView>
-               </children>
-            </Pane>
-         </center>
-         <top>
-            <VBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-               <BorderPane.margin>
-                  <Insets bottom="5.0" left="700.0" right="5.0" top="5.0" />
-               </BorderPane.margin>
-               <children>
-                  <Label fx:id="flightTimeLabel" prefHeight="37.0" prefWidth="200.0" text="Flight Time:">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                  </Label>
-                  <Label fx:id="finalVelocityLabel" prefHeight="37.0" prefWidth="195.0" text="Final Velocity:">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
-                  </Label>
-               </children>
-            </VBox>
-         </top>
-         <left>
-            <VBox prefHeight="200.0" prefWidth="150.0" BorderPane.alignment="CENTER">
-               <children>
-                  <Label fx:id="maxHeightLabel" prefHeight="27.0" prefWidth="156.0" text="Max Height:">
-                     <VBox.margin>
-                        <Insets left="10.0" top="200.0" />
-                     </VBox.margin>
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-               </children>
-            </VBox>
-         </left>
          <bottom>
             <Pane fx:id="bottomPane" prefHeight="125.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                <children>
@@ -90,18 +23,89 @@
                         <Font size="36.0" />
                      </font>
                   </Button>
-                  <Label fx:id="rangeLabel" layoutX="378.0" layoutY="49.0" prefHeight="27.0" prefWidth="135.0" text="Range:">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
                </children>
             </Pane>
          </bottom>
+         <right>
+            <VBox prefHeight="200.0" prefWidth="130.0" spacing="10.0" BorderPane.alignment="CENTER">
+               <children>
+                  <TextArea fx:id="editHeightTextArea" prefHeight="48.0" prefWidth="110.0" promptText="Add height" wrapText="true">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </TextArea>
+                  <TextArea fx:id="editInitialSpeed" prefHeight="48.0" prefWidth="168.0" promptText="Add initial speed" wrapText="true">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </TextArea>
+                  <Label text="Add launch Angle">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </Label>
+                  <Slider fx:id="angleSlider" majorTickUnit="30.0" max="90.0" orientation="VERTICAL" prefHeight="176.0" prefWidth="43.0" showTickLabels="true" showTickMarks="true">
+                     <VBox.margin>
+                        <Insets left="50.0" />
+                     </VBox.margin>
+                  </Slider>
+               </children>
+            </VBox>
+         </right>
+         <center>
+            <Pane fx:id="simulationPane" prefHeight="400.0" prefWidth="600.0" style="-fx-border-color: black; -fx-border-width: 5;" BorderPane.alignment="CENTER">
+               <children>
+                  <Canvas fx:id="simulationCanvas" height="470.0" width="685.0" />
+               </children>
+               <BorderPane.margin>
+                  <Insets left="50.0" right="30.0" />
+               </BorderPane.margin>
+            </Pane>
+         </center>
+         <top>
+            <Pane prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <children>
+                  <VBox layoutX="373.0" prefHeight="100.0" prefWidth="250.0" spacing="10.0">
+                     <children>
+                        <Label fx:id="finalVelocityLabel" prefHeight="40.0" prefWidth="250.0" text="Final Velocity:">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </Label>
+                        <Label fx:id="flightTimeLabel" prefHeight="40.0" prefWidth="250.0" text="Flight Time:">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                           <padding>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <VBox layoutX="623.0" prefHeight="100.0" prefWidth="250.0" spacing="10.0">
+                     <children>
+                        <Label fx:id="rangeLabel" prefHeight="40.0" prefWidth="250.0" text="Range:">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="maxHeightLabel" prefHeight="40.0" prefWidth="250.0" text="Max Height:">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+               </children>
+            </Pane>
+         </top>
       </BorderPane>
       <Label fx:id="titleLabel" text="2D  Projectile Motion Simulator">
          <font>
-            <Font name="Comic Sans MS" size="27.0" />
+            <Font name="Comic Sans MS" size="24.0" />
          </font>
       </Label>
    </children>

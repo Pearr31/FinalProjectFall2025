@@ -11,6 +11,9 @@ public class Projectile {
     private double launchAngle;
     private double initialHeight;
 
+    private double v0x;
+    private double v0y;
+
     //Output Values
     private double flightTime;
     private double maxHeight;
@@ -58,7 +61,17 @@ public class Projectile {
     }
 
     public void projectileLaunch(double maxHieght, double range, double launchAngle, double initialHeight, double flightTime) {
-       //TODO
+        //TODO
+    }
+
+    public double getX(double t) {
+        double v0x = initialVelocity * Math.cos(launchAngle);
+        return v0x * t;
+    }
+
+    public double getY(double t) {
+        double v0y = initialVelocity * Math.sin(launchAngle);
+        return initialHeight + v0y * t - 0.5 * 9.81 * t * t;
     }
 
     public double getInitialVelocity() {
