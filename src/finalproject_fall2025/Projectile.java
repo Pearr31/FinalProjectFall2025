@@ -34,10 +34,12 @@ public class Projectile {
     private void computeValues() {
         if (initialVelocity <= 0 || launchAngle < 0 || initialHeight < 0) {
             System.out.println("Simulation unable to run. Invalid Input");
+            return;
         }
 
-        double v0x = initialVelocity * Math.cos(launchAngle);
-        double v0y = initialVelocity * Math.sin(launchAngle);
+        // store into fields, not new local variables
+        this.v0x = initialVelocity * Math.cos(launchAngle);
+        this.v0y = initialVelocity * Math.sin(launchAngle);
 
         // Solve: y(t) = h0 + v0y t - 1/2 g t^2 = 0
         double a = -0.5 * g;
@@ -45,7 +47,13 @@ public class Projectile {
         double c = initialHeight;
 
         double discriminant = (b * b) - (4 * a * c);
-        flightTime = (-b - Math.sqrt(discriminant)) / (2 * a);  // positive root
+        if (discriminant < 0) {
+            System.out.println("Simulation unable to run. No real flight time.");
+            return;
+        }
+
+        // larger positive root: time when it hits the ground
+        flightTime = (-b - Math.sqrt(discriminant)) / (2 * a);  // (b + sqrt(D)) / g
 
         // h_max = h0 + (v0y^2)/(2g)
         maxHeight = initialHeight + (v0y * v0y) / (2 * g);
@@ -65,13 +73,19 @@ public class Projectile {
     }
 
     public double getX(double t) {
-        double v0x = initialVelocity * Math.cos(launchAngle);
         return v0x * t;
     }
 
     public double getY(double t) {
-        double v0y = initialVelocity * Math.sin(launchAngle);
-        return initialHeight + v0y * t - 0.5 * 9.81 * t * t;
+        return initialHeight + v0y * t - 0.5 * g * t * t;
+    }
+
+    public double getV0x() {
+        return v0x;
+    }
+
+    public double getV0y() {
+        return v0y;
     }
 
     public double getInitialVelocity() {

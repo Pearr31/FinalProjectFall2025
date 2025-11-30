@@ -160,24 +160,31 @@ public class FXMLController implements Initializable {
         gc.clearRect(0, 0, simulationCanvas.getWidth(), simulationCanvas.getHeight());
 
         double canvasWidth = simulationCanvas.getWidth();
-        launchX = canvasWidth - 50;
         double canvasHeight = simulationCanvas.getHeight();
 
         double range = projectile.getRange();
         double initialHeight = projectile.getInitialHeight();
+        double v0x = projectile.getV0x();
 
-        if (range < 0) {
+        boolean isAlmostVertical = Math.abs(v0x) < 1e-3;
+
+        if (!isAlmostVertical && range <= 0) {
             return;
         }
 
-        double xScale = canvasWidth / range;
+        double minDisplayedRange = 50;
+
+        double effectiveRange = Math.max(range, minDisplayedRange);
+        double xScale = canvasWidth / effectiveRange;
         double yScale = canvasHeight / MAXHEIGHTCANVAS;
 
         updatePlatformHeight(initialHeight, yScale);
 
         double flightTime = projectile.getFlightTime();
 
-        previousX = launchX;
+        double launchXPixel = canvasWidth - 20;
+
+        previousX = launchXPixel;
         previousY = heightRectangle.getLayoutY();
         animationStartTime = System.nanoTime();
 
@@ -194,41 +201,41 @@ public class FXMLController implements Initializable {
                 double x = projectile.getX(elapsedSeconds);
                 double y = projectile.getY(elapsedSeconds);
 
+                if (y < 0) {
+                    y = 0;
+                }
                 if (y > MAXHEIGHTCANVAS) {
                     y = MAXHEIGHTCANVAS;
                 }
 
-                double canvasX = launchX - (x * xScale);
+                double canvasX = (isAlmostVertical ? launchXPixel : canvasWidth - (x * xScale)) - 50;
                 double canvasY = canvasHeight - (y * yScale);
 
                 gc.strokeLine(previousX, previousY, canvasX, canvasY);
 
                 previousX = canvasX;
                 previousY = canvasY;
-
-                if (y < 0) {
-                    stop();
-                }
             }
         };
 
         currentTimer.start();
     }
 
-    private void updatePlatformHeight(double heightMeters, double yScale) {
+    private void updatePlatformHeight(double heightMeters, double scale) {
         double canvasHeight = simulationCanvas.getHeight();
 
-        // Convert meters -> pixels using the SAME yScale as the arc
-        double pixelHeight = heightMeters * yScale;
+        // Convert meters -> pixels using the SAME uniform scale as trajectory
+        double pixelHeight = heightMeters * scale;
 
-        if (pixelHeight < 5) {      //if computed too small -> 5 pixels
+        // Ensure minimum visible size
+        if (pixelHeight < 5) {
             pixelHeight = 5;
         }
 
         // Apply size
         heightRectangle.setHeight(pixelHeight);
 
-        // Anchor to ground
+        // Anchor to ground (bottom of canvas)
         heightRectangle.setLayoutY(canvasHeight - pixelHeight);
     }
 }
