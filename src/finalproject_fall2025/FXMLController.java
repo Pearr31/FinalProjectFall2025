@@ -6,6 +6,7 @@ import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -18,6 +19,8 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.*;
+import javafx.scene.transform.Rotate;
 
 /**
  * FXML Controller class
@@ -31,7 +34,7 @@ public class FXMLController implements Initializable {
 
     private AnimationTimer currentTimer;
     @FXML
-    private javafx.scene.shape.Rectangle heightRectangle;
+    private Rectangle heightRectangle;
     @FXML
     private BorderPane borderPane;
     @FXML
@@ -63,7 +66,10 @@ public class FXMLController implements Initializable {
     private Button simulationResetButton;
 
     @FXML
-    private ImageView launcherImage;
+    private Rectangle canonHead;
+
+    @FXML
+    private Circle canonBase;
 
     private static final double MAXHEIGHTCANVAS = 100;   //sets top of canvas to max 100m 
     private double launchX;
@@ -87,13 +93,14 @@ public class FXMLController implements Initializable {
         simulationResetButton.setDisable(true);
 
         angleValueLabel.setText("Angle: " + (int) angleSlider.getValue() + "°");
-        Image image = new Image(getClass().getResource("images\\Launcher.png").toExternalForm());
-        launcherImage.setImage(image);
-        launcherImage.toFront();
 
         angleSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             angleValueLabel.setText("Angle: " + newVal.intValue() + "°");
         });
+
+        double initialHeight = 0; // default starting height
+        double yScale = simulationCanvas.getHeight() / MAXHEIGHTCANVAS;
+        updatePlatformHeight(initialHeight, yScale);
     }
 
     /**
@@ -165,7 +172,7 @@ public class FXMLController implements Initializable {
         simulationResetButton.setDisable(true);
         heightRectangle.setHeight(20);
         heightRectangle.setLayoutY(simulationCanvas.getHeight() - 20);
-
+        updateCannonPosition();
     }
 
     /**
@@ -215,29 +222,34 @@ public class FXMLController implements Initializable {
         double range = projectile.getRange();
         double initialHeight = projectile.getInitialHeight();
         double v0x = projectile.getV0x();
-
         boolean isAlmostVertical = Math.abs(v0x) < 1e-3;
 
         if (!isAlmostVertical && range <= 0) {
             return;
         }
 
-        //Sets minum range and computes scaling
         double minDisplayedRange = 50;
-
         double effectiveRange = Math.max(range, minDisplayedRange);
         double xScale = canvasWidth / effectiveRange;
         double yScale = canvasHeight / MAXHEIGHTCANVAS;
 
+        // Update platform and cannon
         updatePlatformHeight(initialHeight, yScale);
+        rotateCannon(angleSlider.getValue());
 
         double flightTime = projectile.getFlightTime();
 
-        double launchXPixel = canvasWidth - 50;
+        // Get the transformed tip of the cannon head
+        Point2D tipLocal = new Point2D(canonHead.getWidth() / 2, 0); // top-center
+        Point2D tipScene = canonHead.localToScene(tipLocal);
 
-        // Start drawing from the tip of the launcher
-        previousX = launchXPixel;
-        previousY = canvasHeight - (initialHeight * yScale);
+        // Convert to canvas coordinates
+        Point2D canvasOrigin = simulationCanvas.localToScene(0, 0);
+        double cannonTipX = tipScene.getX() - canvasOrigin.getX();
+        double cannonTipY = tipScene.getY() - canvasOrigin.getY();
+
+        previousX = cannonTipX;
+        previousY = cannonTipY;
         animationStartTime = System.nanoTime();
 
         currentTimer = new AnimationTimer() {
@@ -250,18 +262,19 @@ public class FXMLController implements Initializable {
                     return;
                 }
 
-                double x = projectile.getX(elapsedSeconds);
-                double y = projectile.getY(elapsedSeconds);
+                // Physics world coordinates (relative to ground)
+                double x = projectile.getX(elapsedSeconds);         // horizontal distance from launch
+                double y = projectile.getY(elapsedSeconds);         // height above ground
 
-                if (y < 0) {
-                    y = 0;
-                }
-                if (y > MAXHEIGHTCANVAS) {
-                    y = MAXHEIGHTCANVAS;
-                }
+                // Clamp y to canvas bounds
+                y = Math.max(0, Math.min(y, MAXHEIGHTCANVAS));
 
-                double canvasX = (isAlmostVertical ? launchXPixel : canvasWidth - (x * xScale) - 50);
-                double canvasY = canvasHeight - (y * yScale);
+                // Map to canvas:
+                // X: draw to the left from the tip (if your cannon faces left)
+                double canvasX = cannonTipX - x * xScale;
+
+                // Y: offset by initial height so t=0 starts exactly at the tip
+                double canvasY = cannonTipY - (y - initialHeight) * yScale;
 
                 gc.strokeLine(previousX, previousY, canvasX, canvasY);
 
@@ -269,6 +282,8 @@ public class FXMLController implements Initializable {
                 previousY = canvasY;
             }
         };
+        gc.setFill(Color.RED);
+        gc.fillOval(cannonTipX - 3, cannonTipY - 3, 6, 6);
 
         currentTimer.start();
     }
@@ -299,7 +314,53 @@ public class FXMLController implements Initializable {
         heightRectangle.setHeight(pixelHeight);
 
         // Anchor to ground (bottom of canvas)
-        heightRectangle.setLayoutY(canvasHeight - pixelHeight);
+        double platformY = canvasHeight - pixelHeight;
+        heightRectangle.setLayoutY(platformY);
 
+        updateCannonPosition();
+    }
+
+    /**
+     * Repositions the cannon head and base on top of the platform.
+     */
+    private void updateCannonPosition() {
+        if (canonBase != null) {
+            // Center the cannon base on the platform
+            double baseX = heightRectangle.getLayoutX() + (heightRectangle.getWidth() / 2);
+            double baseY = heightRectangle.getLayoutY(); // base sits on top of platform
+            canonBase.setLayoutX(baseX);
+            canonBase.setLayoutY(baseY);
+        }
+
+        if (canonHead != null && canonBase != null) {
+            // Center the cannon head horizontally on the base
+            double headX = canonBase.getLayoutX() - canonHead.getWidth() / 2;
+            double headY = canonBase.getLayoutY() - canonHead.getHeight(); // snap on top of base
+            canonHead.setLayoutX(headX);
+            canonHead.setLayoutY(headY);
+
+            // Reset any previous rotation
+            canonHead.setRotate(0);
+        }
+    }
+
+    /**
+     * Rotates the cannon to match the launch angle.
+     *
+     * @param angleDegrees Angle in degrees from horizontal
+     */
+    private void rotateCannon(double angleDegrees) {
+        if (canonHead != null && canonBase != null) {
+            // Clear previous transforms
+            canonHead.getTransforms().clear();
+
+            // Pivot at bottom center of the cannon head
+            double pivotX = canonHead.getWidth() / 2.0;
+            double pivotY = canonHead.getHeight(); // bottom edge
+
+            // Apply rotation
+            Rotate rotate = new Rotate(-(90 - angleDegrees), pivotX, pivotY); // negative to rotate clockwise
+            canonHead.getTransforms().add(rotate);
+        }
     }
 }
