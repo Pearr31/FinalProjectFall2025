@@ -119,6 +119,7 @@ public class FXMLController implements Initializable {
 
             // Draw trajectory arc
             drawTrajectoryArc(projectile);
+            projectile.projectileLaunch(simulationPane);
 
             simulationResetButton.setDisable(false);
             simulationStartButton.setDisable(true);
@@ -126,7 +127,7 @@ public class FXMLController implements Initializable {
         } catch (NumberFormatException ex) {
             showInvalidInputAlert();
         }
-
+        
     }
 
     /**

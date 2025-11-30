@@ -76,5 +76,4 @@ public class FinalProject_Fall2025 extends Application {
         stage.setScene(startScene);
         stage.show();
     }
-
 }

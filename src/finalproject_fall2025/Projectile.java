@@ -1,6 +1,11 @@
 package finalproject_fall2025;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.util.Duration;
 
 /**
  *
@@ -96,7 +101,12 @@ public class Projectile {
         finalVelocity = Math.sqrt((v0x * v0x) + (vy_final * vy_final));
     }
 
-    public void projectileLaunch() {
+    /**
+     * Launches the projectile visually using JavaFX by animating a Circle along
+     * the trajectory.
+     * @param pane The JavaFX Pane where the projectile should be displayed
+     */
+    public void projectileLaunch(Pane pane) {
         //TODO
     }
 
