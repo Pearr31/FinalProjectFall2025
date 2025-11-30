@@ -12,7 +12,6 @@ public class Projectile {
     private double initialVelocity;
     private double launchAngle;
     private double initialHeight;
-    private Circle circle;
 
     private double v0x;
     private double v0y;

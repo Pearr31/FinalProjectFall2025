@@ -3,7 +3,6 @@ package finalproject_fall2025;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.animation.AnimationTimer;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
@@ -14,7 +13,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
@@ -32,10 +30,10 @@ import javafx.scene.transform.Rotate;
  * @author massi
  */
 public class FXMLController implements Initializable {
-
+    
     @FXML
     private Label angleValueLabel;
-
+    
     private AnimationTimer currentTimer;
     @FXML
     private Rectangle heightRectangle;
@@ -65,16 +63,22 @@ public class FXMLController implements Initializable {
     private Slider angleSlider;
     @FXML
     private Label titleLabel;
-
+    
     @FXML
     private Button simulationResetButton;
-
+    
     @FXML
     private Rectangle canonHead;
-
+    
     @FXML
     private Circle canonBase;
-
+    
+    @FXML
+    private Label canvasHeightLabel;
+    
+    @FXML
+    private Label canvasWidthLabel;
+    
     private static final double MAXHEIGHTCANVAS = 100;   //sets top of canvas to max 100m 
     private double launchX;
     private long animationStartTime;
@@ -92,6 +96,7 @@ public class FXMLController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        //setup background image
         Image backgroundImage = new Image(getClass().getResource("images\\SimulationBackground.jpg").toExternalForm());
         BackgroundImage background = new BackgroundImage(
                 backgroundImage,
@@ -106,19 +111,26 @@ public class FXMLController implements Initializable {
                         true,
                         true)
         );
+
+        //apply background and connect buttons to handlers
         simulationPane.setBackground(new Background(background));
         simulationStartButton.setOnAction(e -> handleSimulationStart());
         simulationResetButton.setOnAction(e -> handleSimulationReset());
         simulationResetButton.setDisable(true);
 
+        //initialize angle label based on slider
         angleValueLabel.setText("Angle: " + (int) angleSlider.getValue() + "°");
-
+        
         angleSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             angleValueLabel.setText("Angle: " + newVal.intValue() + "°");
         });
-
+        
         double initialHeight = 0; // default starting height
         double yScale = simulationCanvas.getHeight() / MAXHEIGHTCANVAS;
+        
+        canvasHeightLabel.setText("Canvas Height: 100m");
+
+        //adjust platform and cannon position based on default height
         updatePlatformHeight(initialHeight, yScale);
     }
 
@@ -126,19 +138,18 @@ public class FXMLController implements Initializable {
      * Handles the action of starting the projectile simulation.
      * <p>
      * Reads user input for initial velocity, launch angle, and initial height,
-     * validates inputs, creates a {@link Projectile} instance, updates result
-     * labels, and starts the animation timer to draw the projectile's
-     * trajectory.
+     * validates inputs, creates a Projectile instance, updates result labels,
+     * and starts the animation timer to draw the projectile's trajectory.
      * </p>
      */
     @FXML
     private void handleSimulationStart() {
         try {
-
+            
             double inputVelocity = Double.parseDouble(editInitialSpeed.getText());
             double inputLaunchAngle = angleSlider.getValue();
             double inputHeight = Double.parseDouble(editHeightTextArea.getText());
-
+            
             Projectile projectile = new Projectile(inputVelocity, inputLaunchAngle, inputHeight);
 
             // Update result labels
@@ -147,20 +158,28 @@ public class FXMLController implements Initializable {
             rangeLabel.setText(String.format("Range: %.2f m", projectile.getRange()));
             finalVelocityLabel.setText(String.format("Final Velocity: %.2f m/s", projectile.getFinalVelocity()));
 
+            //validate that velocity and height are valid inputs
             if (inputVelocity < 0 || inputHeight < 0) {
                 showInvalidInputAlert();
+                return;
+            }
+            
+            if (inputHeight > 90) {
+                showInvalidHeightAlert();
+                return;
             }
 
             // Draw trajectory arc
             drawTrajectoryArc(projectile);
 
+            //disable buttons to prevent overlapping simulations
             simulationResetButton.setDisable(false);
             simulationStartButton.setDisable(true);
-
+            
         } catch (NumberFormatException ex) {
             showInvalidInputAlert();
         }
-
+        
     }
 
     /**
@@ -178,19 +197,23 @@ public class FXMLController implements Initializable {
         }
         editInitialSpeed.clear();
         editHeightTextArea.clear();
-
+        
         flightTimeLabel.setText("Flight Time:");
         maxHeightLabel.setText("Max Height:");
         rangeLabel.setText("Range:");
         finalVelocityLabel.setText("Final Velocity:");
-
+        
         var gc = simulationCanvas.getGraphicsContext2D();
         gc.clearRect(0, 0, simulationCanvas.getWidth(), simulationCanvas.getHeight());
-
+        
         simulationStartButton.setDisable(false);
         simulationResetButton.setDisable(true);
+
+        //reset platform to default height and anchor at bottom 
         heightRectangle.setHeight(20);
         heightRectangle.setLayoutY(simulationCanvas.getHeight() - 20);
+
+        //reposition cannon to default
         updateCannonPosition();
     }
 
@@ -207,7 +230,7 @@ public class FXMLController implements Initializable {
         maxHeightLabel.setText("Max Height: invalid input");
         rangeLabel.setText("Range: invalid input");
         finalVelocityLabel.setText("Final Velocity: invalid input");
-
+        
         Alert invalidInputAlert = new Alert(Alert.AlertType.INFORMATION);
         invalidInputAlert.setHeaderText("ERROR");
 
@@ -218,44 +241,68 @@ public class FXMLController implements Initializable {
         invalidInputAlert.setTitle("Invalid input(s)");
         invalidInputAlert.show();
     }
+    
+    private void showInvalidHeightAlert() {
+        flightTimeLabel.setText("Flight Time: invalid input");
+        maxHeightLabel.setText("Max Height: invalid input");
+        rangeLabel.setText("Range: invalid input");
+        finalVelocityLabel.setText("Final Velocity: invalid input");
+        
+        Alert invalidInputAlert = new Alert(Alert.AlertType.INFORMATION);
+        invalidInputAlert.setHeaderText("ERROR");
+
+        //Alerting the user that there are invalid inputs
+        Label alertLabel = new Label("Invalid Height input. Please input a height less than 100m");
+        alertLabel.setStyle("-fx-font-size: 24px; -fx-text-fill: red; -fx-font-weight: bold;");
+        invalidInputAlert.setGraphic(alertLabel);
+        invalidInputAlert.setTitle("Invalid height input");
+        invalidInputAlert.show();
+    }
 
     /**
      * Draws the trajectory arc of the given projectile on the simulation
      * canvas.
      * <p>
-     * Uses an {@link AnimationTimer} to animate the projectile's motion over
-     * time, drawing line segments between successive positions. Adjusts the
-     * launch platform height according to the projectile's initial height.
+     * Uses an AnimationTimer to animate the projectile's motion over time,
+     * drawing line segments between successive positions. Adjusts the launch
+     * platform height according to the projectile's initial height.
      * </p>
      *
-     * @param projectile The {@link Projectile} object representing the
-     * simulated motion.
+     * @param projectile The Projectile object representing the simulated
+     * motion.
      */
     private void drawTrajectoryArc(Projectile projectile) {
         var gc = simulationCanvas.getGraphicsContext2D();
         gc.clearRect(0, 0, simulationCanvas.getWidth(), simulationCanvas.getHeight());
-
+        
         double canvasWidth = simulationCanvas.getWidth();
         double canvasHeight = simulationCanvas.getHeight();
+        
+        double range = projectile.getRange();       //range in meters
 
-        double range = projectile.getRange();
-        double initialHeight = projectile.getInitialHeight();
+        double initialHeight = projectile.getInitialHeight();   //launch in meters above ground
+
         double v0x = projectile.getV0x();
-        boolean isAlmostVertical = Math.abs(v0x) < 1e-3;
+        boolean isAlmostVertical = Math.abs(v0x) < 1e-3;        //flag to check if the motion is essentially vertical. uses 1e-3 to make very small v initial x, works better than 0.
 
+        //if is almost vertical and doesnt move forward cancel sim
         if (!isAlmostVertical && range <= 0) {
             return;
         }
 
+        //ensure trajectory visibility for short ranges
         double minDisplayedRange = 50;
         double effectiveRange = Math.max(range, minDisplayedRange);
+
+        //set horizontal scale to canvas width by converting meters to pixels
         double xScale = canvasWidth / effectiveRange;
+        //Same logic vertically we want the full canvas height to be MAXHEIGHTCANVAS meters.
         double yScale = canvasHeight / MAXHEIGHTCANVAS;
 
         // Update platform and cannon
         updatePlatformHeight(initialHeight, yScale);
         rotateCannon(angleSlider.getValue());
-
+        
         double flightTime = projectile.getFlightTime();
 
         // Get the transformed tip of the cannon head
@@ -266,16 +313,21 @@ public class FXMLController implements Initializable {
         Point2D canvasOrigin = simulationCanvas.localToScene(0, 0);
         double cannonTipX = tipScene.getX() - canvasOrigin.getX();
         double cannonTipY = tipScene.getY() - canvasOrigin.getY();
-
+        
         previousX = cannonTipX;
         previousY = cannonTipY;
+
+        //mark animation start so we can compute t 
         animationStartTime = System.nanoTime();
 
+        //create animation
         currentTimer = new AnimationTimer() {
             @Override
             public void handle(long now) {
+                //compute how many seconds have passed since animation start time
                 double elapsedSeconds = (now - animationStartTime) / 1_000_000_000.0;
 
+                //after passing total flight time stop animation
                 if (elapsedSeconds > flightTime) {
                     stop();
                     return;
@@ -295,15 +347,18 @@ public class FXMLController implements Initializable {
                 // Y: offset by initial height so t=0 starts exactly at the tip
                 double canvasY = cannonTipY - (y - initialHeight) * yScale;
 
+                // Draw a tiny segment from the previous point to the current one
+                // This builds a continuous curve that looks like a smooth arc
                 gc.strokeLine(previousX, previousY, canvasX, canvasY);
 
+                // Save the current point to be "previous" for the next frame
                 previousX = canvasX;
                 previousY = canvasY;
             }
         };
         gc.setFill(Color.RED);
         gc.fillOval(cannonTipX - 3, cannonTipY - 3, 6, 6);
-
+        
         currentTimer.start();
     }
 
@@ -335,7 +390,7 @@ public class FXMLController implements Initializable {
         // Anchor to ground (bottom of canvas)
         double platformY = canvasHeight - pixelHeight;
         heightRectangle.setLayoutY(platformY);
-
+        
         updateCannonPosition();
     }
 
@@ -350,7 +405,7 @@ public class FXMLController implements Initializable {
             canonBase.setLayoutX(baseX);
             canonBase.setLayoutY(baseY);
         }
-
+        
         if (canonHead != null && canonBase != null) {
             // Center the cannon head horizontally on the base
             double headX = canonBase.getLayoutX() - canonHead.getWidth() / 2;

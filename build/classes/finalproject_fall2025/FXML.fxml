@@ -10,111 +10,150 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane id="AnchorPane" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finalproject_fall2025.FXMLController">
-   <children>
-      <BorderPane fx:id="borderPane" prefHeight="700.0" prefWidth="900.0">
-         <bottom>
-            <Pane fx:id="bottomPane" prefHeight="125.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-               <children>
-                  <Button fx:id="simulationStartButton" layoutX="677.0" layoutY="24.0" mnemonicParsing="false" onAction="#handleSimulationStart" prefWidth="200.0" style="-fx-background-color: lime;" text="Start" textFill="WHITE">
+    <children>
+        <BorderPane fx:id="borderPane" prefHeight="700.0" prefWidth="900.0" style="-fx-background-color: white;">
+            <bottom>
+                <Pane fx:id="bottomPane" prefHeight="125.0" prefWidth="200.0" style="-fx-background-color: lightgrey;" BorderPane.alignment="CENTER">
+                    <children>
+                        <Button fx:id="simulationStartButton" layoutX="677.0" layoutY="24.0" mnemonicParsing="false" onAction="#handleSimulationStart" prefWidth="200.0" style="-fx-background-color: lime;" text="Start" textFill="WHITE">
+                            <font>
+                                <Font size="36.0" />
+                            </font>
+                        </Button>
+                        <Button fx:id="simulationResetButton" layoutX="462.0" layoutY="24.0" mnemonicParsing="false" onAction="#handleSimulationReset" prefWidth="200.0" style="-fx-background-color: red;" text="Reset" textFill="WHITE">
+                            <font>
+                                <Font size="36.0" />
+                            </font>
+                        </Button>
+                  <Label fx:id="canvasHeightLabel" layoutX="14.0" layoutY="24.0" prefHeight="40.0" prefWidth="250.0" text="Canvas Height:">
                      <font>
-                        <Font size="36.0" />
+                        <Font size="18.0" />
                      </font>
-                  </Button>
-                  <Button fx:id="simulationResetButton" layoutX="462.0" layoutY="24.0" mnemonicParsing="false" onAction="#handleSimulationReset" prefWidth="200.0" style="-fx-background-color: red;" text="Reset" textFill="WHITE">
-                     <font>
-                        <Font size="36.0" />
-                     </font>
-                  </Button>
-               </children>
-            </Pane>
-         </bottom>
-         <right>
-            <VBox prefHeight="200.0" prefWidth="130.0" spacing="10.0" BorderPane.alignment="CENTER">
-               <children>
-                  <TextArea fx:id="editHeightTextArea" prefHeight="48.0" prefWidth="110.0" promptText="Add height" wrapText="true">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                  </TextArea>
-                  <TextArea fx:id="editInitialSpeed" prefHeight="48.0" prefWidth="168.0" promptText="Add initial speed" wrapText="true">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                  </TextArea>
-                  <Label text="Add launch Angle">
-                     <font>
-                        <Font size="16.0" />
-                     </font>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
                   </Label>
-                  <Label fx:id="angleValueLabel" text="Angle : " />
-                  <Slider fx:id="angleSlider" blockIncrement="1.0" majorTickUnit="15.0" max="90.0" minorTickCount="2" orientation="VERTICAL" prefHeight="400.0" prefWidth="100.0" showTickLabels="true" showTickMarks="true" style="-fx-padding: black;">
-                     <VBox.margin>
-                        <Insets left="50.0" />
-                     </VBox.margin>
-                  </Slider>
-               </children>
-            </VBox>
-         </right>
-         <center>
-            <Pane fx:id="simulationPane" prefHeight="400.0" prefWidth="600.0" style="-fx-border-color: black; -fx-border-width: 5;" BorderPane.alignment="CENTER">
-               <children>
-                  <Canvas fx:id="simulationCanvas" height="470.0" width="685.0" />
-                  <Rectangle fx:id="heightRectangle" arcHeight="5.0" arcWidth="5.0" blendMode="MULTIPLY" fill="DODGERBLUE" height="200.0" layoutX="610.0" layoutY="270.0" stroke="BLACK" strokeType="INSIDE" width="75.0" />
-               </children>
-               <BorderPane.margin>
-                  <Insets left="50.0" right="30.0" />
-               </BorderPane.margin>
-            </Pane>
-         </center>
-         <top>
-            <Pane prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-               <children>
-                  <VBox layoutX="373.0" prefHeight="100.0" prefWidth="250.0" spacing="10.0">
-                     <children>
-                        <Label fx:id="finalVelocityLabel" prefHeight="40.0" prefWidth="250.0" text="Final Velocity:">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                           <padding>
-                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                           </padding>
+                    </children>
+                </Pane>
+            </bottom>
+            <right>
+                <VBox prefHeight="200.0" prefWidth="130.0" spacing="10.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <TextArea fx:id="editHeightTextArea" prefHeight="48.0" prefWidth="110.0" promptText="Add height (m)" wrapText="true">
+                            <font>
+                                <Font size="15.0" />
+                            </font>
+                            <VBox.margin>
+                                <Insets right="5.0" />
+                            </VBox.margin>
+                        </TextArea>
+                        <TextArea fx:id="editInitialSpeed" prefHeight="48.0" prefWidth="168.0" promptText="Add initial speed (m/s)" wrapText="true">
+                            <font>
+                                <Font size="15.0" />
+                            </font>
+                            <VBox.margin>
+                                <Insets right="5.0" />
+                            </VBox.margin>
+                        </TextArea>
+                        <Label text="Add launch Angle">
+                            <font>
+                                <Font size="16.0" />
+                            </font>
                         </Label>
-                        <Label fx:id="flightTimeLabel" prefHeight="40.0" prefWidth="250.0" text="Flight Time:">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                           <padding>
-                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                           </padding>
-                        </Label>
-                     </children>
-                  </VBox>
-                  <VBox layoutX="623.0" prefHeight="100.0" prefWidth="250.0" spacing="10.0">
-                     <children>
-                        <Label fx:id="rangeLabel" prefHeight="40.0" prefWidth="250.0" text="Range:">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="maxHeightLabel" prefHeight="40.0" prefWidth="250.0" text="Max Height:">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </Label>
-                     </children>
-                  </VBox>
-               </children>
-            </Pane>
-         </top>
-      </BorderPane>
-      <Label fx:id="titleLabel" text="2D  Projectile Motion Simulator">
-         <font>
-            <Font name="Comic Sans MS" size="24.0" />
-         </font>
-      </Label>
-   </children>
+                        <Label fx:id="angleValueLabel" text="Angle : " />
+                        <Slider fx:id="angleSlider" blockIncrement="1.0" majorTickUnit="15.0" max="90.0" minorTickCount="2" orientation="VERTICAL" prefHeight="400.0" prefWidth="100.0" showTickLabels="true" showTickMarks="true" style="-fx-padding: black;">
+                            <VBox.margin>
+                                <Insets left="50.0" />
+                            </VBox.margin>
+                        </Slider>
+                    </children>
+                </VBox>
+            </right>
+            <center>
+                <Pane fx:id="simulationPane" prefHeight="400.0" prefWidth="600.0" style="-fx-border-color: black; -fx-border-width: 5;" BorderPane.alignment="CENTER">
+                    <children>
+                        <Rectangle fx:id="heightRectangle" arcHeight="5.0" arcWidth="5.0" height="200.0" layoutX="610.0" layoutY="270.0" stroke="BLACK" strokeType="INSIDE" width="75.0">
+                     <fill>
+                        <LinearGradient endX="1.0" endY="1.0">
+                           <stops>
+                              <Stop>
+                                 <color>
+                                    <Color red="0.9736841917037964" green="0.016228070482611656" />
+                                 </color>
+                              </Stop>
+                              <Stop offset="1.0">
+                                 <color>
+                                    <Color red="0.5714547038078308" green="0.6973684430122375" blue="0.31962719559669495" />
+                                 </color>
+                              </Stop>
+                           </stops>
+                        </LinearGradient>
+                     </fill></Rectangle>
+                  <Rectangle fx:id="canonHead" arcHeight="5.0" arcWidth="5.0" fill="#595959" height="30.0" layoutX="642.0" layoutY="237.0" stroke="BLACK" strokeType="INSIDE" width="10.0" />
+                  <Circle fx:id="canonBase" layoutX="647.0" layoutY="270.0" radius="7.0" stroke="BLACK" strokeType="INSIDE" />
+                        <Canvas fx:id="simulationCanvas" height="470.0" layoutX="2.0" layoutY="2.0" width="685.0" />
+                    </children>
+                    <BorderPane.margin>
+                        <Insets left="50.0" right="30.0" />
+                    </BorderPane.margin>
+                </Pane>
+            </center>
+            <top>
+                <Pane prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <VBox layoutX="373.0" prefHeight="100.0" prefWidth="250.0" spacing="10.0">
+                            <children>
+                                <Label fx:id="finalVelocityLabel" prefHeight="40.0" prefWidth="250.0" text="Final Velocity:">
+                                    <font>
+                                        <Font size="18.0" />
+                                    </font>
+                                    <padding>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                    </padding>
+                                </Label>
+                                <Label fx:id="flightTimeLabel" prefHeight="40.0" prefWidth="250.0" text="Flight Time:">
+                                    <font>
+                                        <Font size="18.0" />
+                                    </font>
+                                    <padding>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                    </padding>
+                                </Label>
+                            </children>
+                        </VBox>
+                        <VBox layoutX="623.0" prefHeight="100.0" prefWidth="250.0" spacing="10.0">
+                            <children>
+                                <Label fx:id="rangeLabel" prefHeight="40.0" prefWidth="250.0" text="Range:">
+                                    <font>
+                                        <Font size="18.0" />
+                                    </font>
+                                </Label>
+                                <Label fx:id="maxHeightLabel" prefHeight="40.0" prefWidth="250.0" text="Max Height:">
+                                    <font>
+                                        <Font size="18.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </VBox>
+                    </children>
+                </Pane>
+            </top>
+        </BorderPane>
+        <Label fx:id="titleLabel" text="2D  Projectile Motion Simulator">
+            <font>
+                <Font name="Comic Sans MS" size="24.0" />
+            </font>
+            <padding>
+                <Insets left="5.0" />
+            </padding>
+        </Label>
+    </children>
 </AnchorPane>
