@@ -45,7 +45,7 @@ public class FXMLController implements Initializable {
     @FXML
     private Button simulationStartButton;
     @FXML
-    private Pane simulationPane;            
+    private Pane simulationPane;
     @FXML
     private Canvas simulationCanvas;
     @FXML
@@ -67,7 +67,13 @@ public class FXMLController implements Initializable {
     private double previousY;
 
     /**
-     * Initializes the controller class.
+     * Initializes the controller class. Sets up event handlers for buttons and
+     * updates the angle label when the slider value changes.
+     *
+     * @param url The location used to resolve relative paths for the root
+     * object, or null if unknown.
+     * @param rb The resources used to localize the root object, or null if not
+     * provided.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -82,6 +88,15 @@ public class FXMLController implements Initializable {
         });
     }
 
+    /**
+     * Handles the action of starting the projectile simulation.
+     * <p>
+     * Reads user input for initial velocity, launch angle, and initial height,
+     * validates inputs, creates a {@link Projectile} instance, updates result
+     * labels, and starts the animation timer to draw the projectile's
+     * trajectory.
+     * </p>
+     */
     @FXML
     private void handleSimulationStart() {
         try {
@@ -97,7 +112,7 @@ public class FXMLController implements Initializable {
             maxHeightLabel.setText(String.format("Max Height: %.2f m", projectile.getMaxHeight()));
             rangeLabel.setText(String.format("Range: %.2f m", projectile.getRange()));
             finalVelocityLabel.setText(String.format("Final Velocity: %.2f m/s", projectile.getFinalVelocity()));
-            
+
             if (inputVelocity < 0 || inputHeight < 0) {
                 showInvalidInputAlert();
             }
@@ -114,6 +129,13 @@ public class FXMLController implements Initializable {
 
     }
 
+    /**
+     * Handles resetting the simulation to its initial state.
+     * <p>
+     * Stops any ongoing animation, clears input fields, resets labels, clears
+     * the canvas, and restores the launch platform rectangle.
+     * </p>
+     */
     @FXML
     private void handleSimulationReset() {
         if (currentTimer != null) {
@@ -138,6 +160,14 @@ public class FXMLController implements Initializable {
 
     }
 
+    /**
+     * Displays an alert to the user indicating that the input values are
+     * invalid.
+     * <p>
+     * Updates the result labels to indicate invalid input and shows a red alert
+     * message.
+     * </p>
+     */
     private void showInvalidInputAlert() {
         flightTimeLabel.setText("Flight Time: invalid input");
         maxHeightLabel.setText("Max Height: invalid input");
@@ -155,6 +185,18 @@ public class FXMLController implements Initializable {
         invalidInputAlert.show();
     }
 
+    /**
+     * Draws the trajectory arc of the given projectile on the simulation
+     * canvas.
+     * <p>
+     * Uses an {@link AnimationTimer} to animate the projectile's motion over
+     * time, drawing line segments between successive positions. Adjusts the
+     * launch platform height according to the projectile's initial height.
+     * </p>
+     *
+     * @param projectile The {@link Projectile} object representing the
+     * simulated motion.
+     */
     private void drawTrajectoryArc(Projectile projectile) {
         var gc = simulationCanvas.getGraphicsContext2D();
         gc.clearRect(0, 0, simulationCanvas.getWidth(), simulationCanvas.getHeight());
@@ -208,7 +250,7 @@ public class FXMLController implements Initializable {
                     y = MAXHEIGHTCANVAS;
                 }
 
-                double canvasX = (isAlmostVertical ? launchXPixel : canvasWidth - (x * xScale)- 50) ;
+                double canvasX = (isAlmostVertical ? launchXPixel : canvasWidth - (x * xScale) - 50);
                 double canvasY = canvasHeight - (y * yScale);
 
                 gc.strokeLine(previousX, previousY, canvasX, canvasY);
@@ -221,6 +263,17 @@ public class FXMLController implements Initializable {
         currentTimer.start();
     }
 
+    /**
+     * Updates the height of the launch platform rectangle according to the
+     * projectile's initial height.
+     * <p>
+     * Converts height in meters to pixels using the canvas scale and anchors
+     * the rectangle to the bottom of the canvas.
+     * </p>
+     *
+     * @param heightMeters Height of the platform in meters.
+     * @param scale Conversion factor from meters to pixels.
+     */
     private void updatePlatformHeight(double heightMeters, double scale) {
         double canvasHeight = simulationCanvas.getHeight();
 

@@ -23,8 +23,21 @@ public class Projectile {
     private double range;
     private double finalVelocity;
 
-    private final double g = 9.81;    //Gavitational constant
+    //Gavitational constant
+    private final double g = 9.81;
 
+    /**
+     * Creates a new Projectile instance with the specified initial velocity,
+     * launch angle, and height.
+     * <p>
+     * Converts the launch angle to radians and automatically computes all
+     * derived values.
+     * </p>
+     *
+     * @param initialVelocity Initial speed in meters per second (must be ≥ 0)
+     * @param launchAngle Launch angle in degrees (0° ≤ angle ≤ 90°)
+     * @param initialHeight Initial height in meters (≥ 0)
+     */
     public Projectile(double initialVelocity, double launchAngle, double initialHeight) {
         this.initialVelocity = initialVelocity;
         this.launchAngle = Math.toRadians(launchAngle); //Convert to radians for easier calculations
@@ -33,7 +46,19 @@ public class Projectile {
         computeValues();
     }
 
-    //despacito
+    /**
+     * Computes the horizontal and vertical velocity components, flight time,
+     * maximum height, range, and final velocity.
+     * <p>
+     * Uses standard projectile motion equations:
+     * <ul>
+     * Horizontal velocity: v0x = v0 * cos(θ) Vertical velocity: v0y = v0 *
+     * sin(θ) Flight time: solved from y(t) = h0 + v0y * t - 0.5 * g * t² = 0
+     * Maximum height: h_max = h0 + (v0y²) / (2g) Range: x = v0x * flightTime
+     * Final velocity: magnitude of (v0x, vy_final)
+     * </ul>
+     * </p>
+     */
     private void computeValues() {
         if (initialVelocity <= 0 || launchAngle < 0 || initialHeight < 0) {
             System.out.println("Simulation unable to run. Invalid Input");
@@ -75,10 +100,22 @@ public class Projectile {
         //TODO
     }
 
+    /**
+     * Returns the horizontal position of the projectile at time t.
+     *
+     * @param t Time in seconds since launch
+     * @return Horizontal position in meters
+     */
     public double getX(double t) {
         return v0x * t;
     }
 
+    /**
+     * Returns the vertical position of the projectile at time t.
+     *
+     * @param t Time in seconds since launch
+     * @return Vertical position in meters
+     */
     public double getY(double t) {
         return initialHeight + v0y * t - 0.5 * g * t * t;
     }

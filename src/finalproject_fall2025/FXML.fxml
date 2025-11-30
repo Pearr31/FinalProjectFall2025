@@ -39,11 +39,17 @@
                      <font>
                         <Font size="15.0" />
                      </font>
+                     <VBox.margin>
+                        <Insets right="5.0" />
+                     </VBox.margin>
                   </TextArea>
                   <TextArea fx:id="editInitialSpeed" prefHeight="48.0" prefWidth="168.0" promptText="Add initial speed" wrapText="true">
                      <font>
                         <Font size="15.0" />
                      </font>
+                     <VBox.margin>
+                        <Insets right="5.0" />
+                     </VBox.margin>
                   </TextArea>
                   <Label text="Add launch Angle">
                      <font>
@@ -115,6 +121,9 @@
          <font>
             <Font name="Comic Sans MS" size="24.0" />
          </font>
+         <padding>
+            <Insets left="5.0" />
+         </padding>
       </Label>
    </children>
 </AnchorPane>
