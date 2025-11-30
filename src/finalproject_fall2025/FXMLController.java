@@ -16,6 +16,10 @@ import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -88,6 +92,21 @@ public class FXMLController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        Image backgroundImage = new Image(getClass().getResource("images\\SimulationBackground.jpg").toExternalForm());
+        BackgroundImage background = new BackgroundImage(
+                backgroundImage,
+                BackgroundRepeat.NO_REPEAT, // no horizontal repeat
+                BackgroundRepeat.NO_REPEAT, // no vertical repeat
+                BackgroundPosition.CENTER, // position at center
+                new BackgroundSize(
+                        BackgroundSize.AUTO,
+                        BackgroundSize.AUTO,
+                        false,
+                        false,
+                        true,
+                        true)
+        );
+        simulationPane.setBackground(new Background(background));
         simulationStartButton.setOnAction(e -> handleSimulationStart());
         simulationResetButton.setOnAction(e -> handleSimulationReset());
         simulationResetButton.setDisable(true);
