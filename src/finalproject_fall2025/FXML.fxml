@@ -12,6 +12,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 
 <AnchorPane id="AnchorPane" prefHeight="700.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="finalproject_fall2025.FXMLController">
    <children>
@@ -69,6 +71,11 @@
             <Pane fx:id="simulationPane" prefHeight="400.0" prefWidth="600.0" style="-fx-border-color: black; -fx-border-width: 5;" BorderPane.alignment="CENTER">
                <children>
                   <Canvas fx:id="simulationCanvas" height="470.0" width="685.0" />
+                  <ImageView fx:id="launcherImage"
+                       fitWidth="60"
+                       preserveRatio="true"
+                       mouseTransparent="true">
+            </ImageView>
                   <Rectangle fx:id="heightRectangle" arcHeight="5.0" arcWidth="5.0" blendMode="MULTIPLY" fill="#ff501f" height="200.0" layoutX="610.0" layoutY="270.0" stroke="BLACK" strokeType="INSIDE" width="75.0" />
                </children>
                <BorderPane.margin>

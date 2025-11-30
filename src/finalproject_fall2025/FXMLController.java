@@ -12,6 +12,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -60,6 +62,9 @@ public class FXMLController implements Initializable {
     @FXML
     private Button simulationResetButton;
 
+    @FXML
+    private ImageView launcherImage;
+
     private static final double MAXHEIGHTCANVAS = 100;   //sets top of canvas to max 100m 
     private double launchX;
     private long animationStartTime;
@@ -82,6 +87,9 @@ public class FXMLController implements Initializable {
         simulationResetButton.setDisable(true);
 
         angleValueLabel.setText("Angle: " + (int) angleSlider.getValue() + "°");
+        Image image = new Image(getClass().getResource("images\\Launcher.png").toExternalForm());
+        launcherImage.setImage(image);
+        launcherImage.toFront();
 
         angleSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             angleValueLabel.setText("Angle: " + newVal.intValue() + "°");
@@ -126,7 +134,7 @@ public class FXMLController implements Initializable {
         } catch (NumberFormatException ex) {
             showInvalidInputAlert();
         }
-        
+
     }
 
     /**
@@ -214,6 +222,7 @@ public class FXMLController implements Initializable {
             return;
         }
 
+        //Sets minum range and computes scaling
         double minDisplayedRange = 50;
 
         double effectiveRange = Math.max(range, minDisplayedRange);
@@ -224,10 +233,11 @@ public class FXMLController implements Initializable {
 
         double flightTime = projectile.getFlightTime();
 
-        double launchXPixel = canvasWidth - 20;
+        double launchXPixel = canvasWidth - 50;
 
+        // Start drawing from the tip of the launcher
         previousX = launchXPixel;
-        previousY = heightRectangle.getLayoutY();
+        previousY = canvasHeight - (initialHeight * yScale);
         animationStartTime = System.nanoTime();
 
         currentTimer = new AnimationTimer() {
@@ -290,5 +300,6 @@ public class FXMLController implements Initializable {
 
         // Anchor to ground (bottom of canvas)
         heightRectangle.setLayoutY(canvasHeight - pixelHeight);
+
     }
 }
