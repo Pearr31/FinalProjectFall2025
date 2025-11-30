@@ -73,6 +73,7 @@ public class FinalProject_Fall2025 extends Application {
         });
         startPane.getChildren().addAll(startLabel, startButton1);
         Scene startScene = new Scene(startPane);
+        stage.setResizable(false);
         stage.setScene(startScene);
         stage.show();
     }
