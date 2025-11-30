@@ -1,5 +1,7 @@
 package finalproject_fall2025;
 
+import javafx.scene.shape.Circle;
+
 /**
  *
  * @author massi
@@ -10,6 +12,7 @@ public class Projectile {
     private double initialVelocity;
     private double launchAngle;
     private double initialHeight;
+    private Circle circle;
 
     private double v0x;
     private double v0y;
@@ -68,7 +71,7 @@ public class Projectile {
         finalVelocity = Math.sqrt((v0x * v0x) + (vy_final * vy_final));
     }
 
-    public void projectileLaunch(double maxHieght, double range, double launchAngle, double initialHeight, double flightTime) {
+    public void projectileLaunch() {
         //TODO
     }
 

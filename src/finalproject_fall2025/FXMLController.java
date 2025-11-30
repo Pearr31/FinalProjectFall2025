@@ -90,10 +90,6 @@ public class FXMLController implements Initializable {
             double inputLaunchAngle = angleSlider.getValue();
             double inputHeight = Double.parseDouble(editHeightTextArea.getText());
 
-            if (inputVelocity < 0) {
-                showInvalidInputAlert();
-            }
-
             Projectile projectile = new Projectile(inputVelocity, inputLaunchAngle, inputHeight);
 
             // Update result labels
@@ -101,6 +97,10 @@ public class FXMLController implements Initializable {
             maxHeightLabel.setText(String.format("Max Height: %.2f m", projectile.getMaxHeight()));
             rangeLabel.setText(String.format("Range: %.2f m", projectile.getRange()));
             finalVelocityLabel.setText(String.format("Final Velocity: %.2f m/s", projectile.getFinalVelocity()));
+            
+            if (inputVelocity < 0) {
+                showInvalidInputAlert();
+            }
 
             // Draw trajectory arc
             drawTrajectoryArc(projectile);
