@@ -69,7 +69,7 @@
             <Pane fx:id="simulationPane" prefHeight="400.0" prefWidth="600.0" style="-fx-border-color: black; -fx-border-width: 5;" BorderPane.alignment="CENTER">
                <children>
                   <Canvas fx:id="simulationCanvas" height="470.0" width="685.0" />
-                  <Rectangle fx:id="heightRectangle" arcHeight="5.0" arcWidth="5.0" blendMode="MULTIPLY" fill="DODGERBLUE" height="200.0" layoutX="610.0" layoutY="270.0" stroke="BLACK" strokeType="INSIDE" width="75.0" />
+                  <Rectangle fx:id="heightRectangle" arcHeight="5.0" arcWidth="5.0" blendMode="MULTIPLY" fill="#ff501f" height="200.0" layoutX="610.0" layoutY="270.0" stroke="BLACK" strokeType="INSIDE" width="75.0" />
                </children>
                <BorderPane.margin>
                   <Insets left="50.0" right="30.0" />
