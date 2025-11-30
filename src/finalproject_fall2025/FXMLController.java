@@ -45,7 +45,7 @@ public class FXMLController implements Initializable {
     @FXML
     private Button simulationStartButton;
     @FXML
-    private Pane simulationPane;            //is this still needed after switching to canvas?
+    private Pane simulationPane;            
     @FXML
     private Canvas simulationCanvas;
     @FXML
@@ -98,7 +98,7 @@ public class FXMLController implements Initializable {
             rangeLabel.setText(String.format("Range: %.2f m", projectile.getRange()));
             finalVelocityLabel.setText(String.format("Final Velocity: %.2f m/s", projectile.getFinalVelocity()));
             
-            if (inputVelocity < 0) {
+            if (inputVelocity < 0 || inputHeight < 0) {
                 showInvalidInputAlert();
             }
 
@@ -208,7 +208,7 @@ public class FXMLController implements Initializable {
                     y = MAXHEIGHTCANVAS;
                 }
 
-                double canvasX = (isAlmostVertical ? launchXPixel : canvasWidth - (x * xScale)) - 50;
+                double canvasX = (isAlmostVertical ? launchXPixel : canvasWidth - (x * xScale)- 50) ;
                 double canvasY = canvasHeight - (y * yScale);
 
                 gc.strokeLine(previousX, previousY, canvasX, canvasY);
