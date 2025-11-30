@@ -60,7 +60,11 @@ public class FXMLController implements Initializable {
     @FXML
     private Button simulationResetButton;
 
-    private static final double MAXHEIGHTCANVAS = 100;      //sets top of canvas to max 100m 
+    private static final double MAXHEIGHTCANVAS = 100;   //sets top of canvas to max 100m 
+    private double launchX;
+    private long animationStartTime;
+    private double previousX;
+    private double previousY;
 
     /**
      * Initializes the controller class.
@@ -81,7 +85,7 @@ public class FXMLController implements Initializable {
     @FXML
     private void handleSimulationStart() {
         try {
-            
+
             double inputVelocity = Double.parseDouble(editInitialSpeed.getText());
             double inputLaunchAngle = angleSlider.getValue();
             double inputHeight = Double.parseDouble(editHeightTextArea.getText());
@@ -156,15 +160,16 @@ public class FXMLController implements Initializable {
         gc.clearRect(0, 0, simulationCanvas.getWidth(), simulationCanvas.getHeight());
 
         double canvasWidth = simulationCanvas.getWidth();
+        launchX = canvasWidth - 50;
         double canvasHeight = simulationCanvas.getHeight();
 
         double range = projectile.getRange();
-        double maxHeight = projectile.getMaxHeight();
         double initialHeight = projectile.getInitialHeight();
 
-        if (range <= 0) {
+        if (range < 0) {
             return;
         }
+
         double xScale = canvasWidth / range;
         double yScale = canvasHeight / MAXHEIGHTCANVAS;
 
@@ -172,23 +177,14 @@ public class FXMLController implements Initializable {
 
         double flightTime = projectile.getFlightTime();
 
-        // Animation state
-        final long[] startTime = {0};
-        final double[] prevX = {canvasWidth}; // Start at right edge
-        final double[] prevY = {heightRectangle.getLayoutY()};
+        previousX = launchX;
+        previousY = heightRectangle.getLayoutY();
+        animationStartTime = System.nanoTime();
 
         currentTimer = new AnimationTimer() {
-
-            @Override
-            public void start() {
-                startTime[0] = System.nanoTime();
-                super.start();
-            }
-
             @Override
             public void handle(long now) {
-
-                double elapsedSeconds = (now - startTime[0]) / 1_000_000_000.0;
+                double elapsedSeconds = (now - animationStartTime) / 1_000_000_000.0;
 
                 if (elapsedSeconds > flightTime) {
                     stop();
@@ -202,23 +198,21 @@ public class FXMLController implements Initializable {
                     y = MAXHEIGHTCANVAS;
                 }
 
-                //️ MIRROR X so it draws from right to left
-                double canvasX = canvasWidth - (x * xScale);
+                double canvasX = launchX - (x * xScale);
                 double canvasY = canvasHeight - (y * yScale);
 
-                gc.strokeLine(prevX[0], prevY[0], canvasX, canvasY);
+                gc.strokeLine(previousX, previousY, canvasX, canvasY);
 
-                prevX[0] = canvasX;
-                prevY[0] = canvasY;
+                previousX = canvasX;
+                previousY = canvasY;
 
                 if (y < 0) {
-                    this.stop();
+                    stop();
                 }
             }
         };
 
         currentTimer.start();
-
     }
 
     private void updatePlatformHeight(double heightMeters, double yScale) {
