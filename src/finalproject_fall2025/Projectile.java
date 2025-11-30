@@ -102,15 +102,6 @@ public class Projectile {
     }
 
     /**
-     * Launches the projectile visually using JavaFX by animating a Circle along
-     * the trajectory.
-     * @param pane The JavaFX Pane where the projectile should be displayed
-     */
-    public void projectileLaunch(Pane pane) {
-        //TODO
-    }
-
-    /**
      * Returns the horizontal position of the projectile at time t.
      *
      * @param t Time in seconds since launch
