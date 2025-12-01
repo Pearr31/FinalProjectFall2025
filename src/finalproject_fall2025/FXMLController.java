@@ -202,6 +202,7 @@ public class FXMLController implements Initializable {
         maxHeightLabel.setText("Max Height:");
         rangeLabel.setText("Range:");
         finalVelocityLabel.setText("Final Velocity:");
+        angleSlider.setValue(0);
         
         var gc = simulationCanvas.getGraphicsContext2D();
         gc.clearRect(0, 0, simulationCanvas.getWidth(), simulationCanvas.getHeight());
@@ -242,6 +243,14 @@ public class FXMLController implements Initializable {
         invalidInputAlert.show();
     }
     
+    /**
+     * Displays an alert to the user indicating that the height input value is
+     * invalid.
+     * <p>
+     * Updates the result labels to indicate invalid input and shows a red alert
+     * message.
+     * </p>
+     */
     private void showInvalidHeightAlert() {
         flightTimeLabel.setText("Flight Time: invalid input");
         maxHeightLabel.setText("Max Height: invalid input");
@@ -252,7 +261,7 @@ public class FXMLController implements Initializable {
         invalidInputAlert.setHeaderText("ERROR");
 
         //Alerting the user that there are invalid inputs
-        Label alertLabel = new Label("Invalid Height input. Please input a height less than 100m");
+        Label alertLabel = new Label("Invalid Height input. Please input a height 90m or less");
         alertLabel.setStyle("-fx-font-size: 24px; -fx-text-fill: red; -fx-font-weight: bold;");
         invalidInputAlert.setGraphic(alertLabel);
         invalidInputAlert.setTitle("Invalid height input");
