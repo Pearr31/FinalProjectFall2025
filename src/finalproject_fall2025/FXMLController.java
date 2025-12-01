@@ -299,7 +299,7 @@ public class FXMLController implements Initializable {
             return;
         }
 
-        //ensure trajectory visibility for short ranges
+        //ensure trajectory visibility for short ranges does not change the horizontal scale
         double minDisplayedRange = 50;
         double effectiveRange = Math.max(range, minDisplayedRange);
 
@@ -365,6 +365,7 @@ public class FXMLController implements Initializable {
                 previousY = canvasY;
             }
         };
+        //Marking startpoint of the projectile
         gc.setFill(Color.RED);
         gc.fillOval(cannonTipX - 3, cannonTipY - 3, 6, 6);
         
