@@ -283,7 +283,7 @@ public class FXMLController implements Initializable {
     private void drawTrajectoryArc(Projectile projectile) {
         var gc = simulationCanvas.getGraphicsContext2D();
         gc.clearRect(0, 0, simulationCanvas.getWidth(), simulationCanvas.getHeight());
-        
+        //creating variable from inputed values for use in calculations
         double canvasWidth = simulationCanvas.getWidth();
         double canvasHeight = simulationCanvas.getHeight();
         
@@ -314,42 +314,41 @@ public class FXMLController implements Initializable {
         
         double flightTime = projectile.getFlightTime();
 
-        // Get the transformed tip of the cannon head
+        // Get the local coordinates at tip of the cannon head (0,0) in scene coordinates
         Point2D tipLocal = new Point2D(canonHead.getWidth() / 2, 0); // top-center
-        Point2D tipScene = canonHead.localToScene(tipLocal);
+        Point2D tipScene = canonHead.localToScene(tipLocal); //converts to scene coordinates
 
-        // Convert to canvas coordinates
+        // Convert to canvas coordinates, get coordinates relative to canvas
         Point2D canvasOrigin = simulationCanvas.localToScene(0, 0);
         double cannonTipX = tipScene.getX() - canvasOrigin.getX();
         double cannonTipY = tipScene.getY() - canvasOrigin.getY();
-        
+        //start point for the line
         previousX = cannonTipX;
         previousY = cannonTipY;
 
-        //mark animation start so we can compute t 
+        //mark animation start so we can compute t (in nanoseconds)
         animationStartTime = System.nanoTime();
-
-        //create animation
+        //create Animation
         currentTimer = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 //compute how many seconds have passed since animation start time
-                double elapsedSeconds = (now - animationStartTime) / 1_000_000_000.0;
+                double elapsedSeconds = (now - animationStartTime) / 1_000_000_000.0; //converts nanoseconds to seconds
 
-                //after passing total flight time stop animation
+                //after passing calculated flight time stop animation
                 if (elapsedSeconds > flightTime) {
                     stop();
                     return;
                 }
 
-                // Physics world coordinates (relative to ground)
+                // get projectiles current position at t
                 double x = projectile.getX(elapsedSeconds);         // horizontal distance from launch
                 double y = projectile.getY(elapsedSeconds);         // height above ground
 
                 // Clamp y to canvas bounds
                 y = Math.max(0, Math.min(y, MAXHEIGHTCANVAS));
 
-                // Map to canvas:
+                // Map to canvas coordinates:
                 // X: draw to the left from the tip (if your cannon faces left)
                 double canvasX = cannonTipX - x * xScale;
 
