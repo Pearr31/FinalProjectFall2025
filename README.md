@@ -80,7 +80,7 @@ X
 | Team Member | Contribution |
 
 | Matthew Pereira | Core JavaFX animation logic, styling, scaling and physics integration |
-| Massimo Deluca | Physics logic, projectile equations, caling and physics integration |
+| Massimo Deluca | Physics logic, projectile equations, calculating and physics integration |
 | Amine Achik | UI layout, FXML design, physics logic, debugging and documentation |
 
 
