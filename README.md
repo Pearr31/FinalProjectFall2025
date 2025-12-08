@@ -27,10 +27,6 @@ The simulator converts real physics units (meters, seconds) into on-screen pixel
 ## How to Use the Simulator
 X
 
-
-## Invalid Inputs and Troubleshooting
-X
-
 --------
 
 ## Features
@@ -41,38 +37,6 @@ X
 - Error handling for invalid input
 - Clean and intuitive JavaFX user interface
 - Animates the projectile motion in real time using JavaFx's Animation Timer
-
---------
-
-## Project Structure
-
-### Main Classes
-- **FinalProject_Fall2025**
-  - Launches the JavaFX application
-  - Displays welcome screen and transitions to simulator
-
-- **FXMLController**
-  - Handles all UI interactions
-  - Manages animation logic and scaling
-  - Connects physics calculations to visual output
-
-- **Projectile**
-  - Performs all physics calculations
-  - Computes velocity components, flight time, range, max height and final velocity
-
---------
-
-## Challenges Encountered
-X
-
-## Solutions Implemented 
-X
-
-## Lessons Learned
-X
-
-## Key Concepts Used
-X
 
 --------
 
