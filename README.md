@@ -25,7 +25,10 @@ The simulator converts real physics units (meters, seconds) into on-screen pixel
 --------
 
 ## How to Use the Simulator
-X
+-Enter three values on the right side of the screen: the initial launch speed, the launch angle, and the initial height. Adjust the angle using the slider, and type the other two values into their text fields.
+Once your inputs are ready, click Start Simulation. The cannon will rotate to match the inputed angle, the projectile will launch, and the trajectory will be drawn in real time on the canvas. The program will also display the calculated flight time, maximum height, range, and final velocity.
+-To run another simulation, click Reset Simulation. This clears the canvas, resets the controls, and allows you to enter new values.
+-Make sure all inputs are valid numbers—if something is incorrect, the program will display an error message to help you correct it (negative values and extreme heights are invalid).
 
 --------
 
